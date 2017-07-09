@@ -10,6 +10,8 @@ import webpackConfig from '../webpack.config.dev';
 import users from './routes/users';
 import auth from './routes/auth';
 import events from './routes/events';
+import allPolls from './routes/allPolls';
+import newPoll from './routes/newPoll';
 
 let app = express();
 
@@ -18,6 +20,8 @@ app.use(bodyParser.json());
 app.use('/api/users', users);
 app.use('/api/auth', auth);
 app.use('/api/events', events);
+app.use('/api/all-polls', allPolls);
+app.use('/api/new-poll', newPoll);
 
 const compiler = webpack(webpackConfig);
 
