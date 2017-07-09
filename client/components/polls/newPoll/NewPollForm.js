@@ -1,4 +1,5 @@
 import React from 'react';
+import classnames from 'classnames';
 
 class NewPollForm extends React.Component {
   constructor(props) {
@@ -6,7 +7,9 @@ class NewPollForm extends React.Component {
     this.state = {
       pollQuestion: '',
       answer1: '',
-      answer2: ''
+      answer2: '',
+      errors: {},
+      isLoading: false
     }
 
     this.onChange = this.onChange.bind(this);
@@ -19,15 +22,20 @@ class NewPollForm extends React.Component {
 
   onSubmit(e) {
     e.preventDefault();
-    this.props.newPollRequest(this.state);
+    this.setState({ errors: {}, isLoading: true });
+    this.props.newPollRequest(this.state).then(
+      () => {},
+      ({ data }) => this.setState({ errors: data, isLoading: false })
+    );
   }
 
   render() {
+    const { errors } = this.state;
     return(
       <div className="row">
         <form onSubmit={this.onSubmit}>
           <h2>Create a new poll </h2>
-          <div className="form-group">
+          <div className={classnames("form-group", { 'has-error': errors.pollQuestion })}>
             <label className="control-label">Poll Question</label>
             <input
               value={this.state.pollQuestion}
@@ -36,9 +44,10 @@ class NewPollForm extends React.Component {
               name="pollQuestion"
               className="form-control"
               />
+              {errors.pollQuestion && <span className="help-block">{errors.pollQuestion}</span> }
           </div>
 
-          <div className="form-group">
+          <div className={classnames("form-group", { 'has-error': errors.answer1 })}>
             <label className="control-label">Answer 1</label>
             <input
               value={this.state.answer1}
@@ -47,9 +56,10 @@ class NewPollForm extends React.Component {
               name="answer1"
               className="form-control"
               />
+              {errors.answer1 && <span className="help-block">{errors.answer2}</span> }
           </div>
 
-          <div className="form-group">
+          <div className={classnames("form-group", { 'has-error': errors.answer2 })}>
             <label className="control-label">Answer 2</label>
             <input
               value={this.state.answer2}
@@ -58,10 +68,11 @@ class NewPollForm extends React.Component {
               name="answer2"
               className="form-control"
               />
+              {errors.answer2 && <span className="help-block">{errors.answer2}</span> }
           </div>
 
           <div className="form-group">
-            <button className="btn btn-primary btn-lg">
+            <button disabled={this.state.isLoading} className="btn btn-primary btn-lg">
               Create Poll
             </button>
           </div>
